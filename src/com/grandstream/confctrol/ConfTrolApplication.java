@@ -1,17 +1,10 @@
 package com.grandstream.confctrol;
 
 import android.app.Application;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
-import android.text.TextUtils;
-import android.view.Gravity;
-import com.grandstream.confctrol.entity.BluetoothDeviceInfo;
+import com.grandstream.confctrol.entity.DeviceInfo;
 import com.grandstream.confctrol.manager.BluetoothCommunicationManager;
-import com.grandstream.confctrol.utils.Constants;
-import com.grandstream.confctrol.utils.LogUtils;
 
 /**
  * Created by zhyjiang on 12/16/15.
@@ -75,7 +68,7 @@ public class ConfTrolApplication extends Application {
     public boolean isConnecting = false;
 
 
-    public BluetoothDeviceInfo mDeviceInfo;
+    public DeviceInfo mDeviceInfo;
 
     private BluetoothHandingService mChatService;
 

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by zhyjiang on 12/15/15.
  */
-public class BluetoothDeviceInfo implements Serializable {
+public class DeviceInfo implements Serializable {
 
 
     private static final long serialVersionUID = 2198780216136180013L;

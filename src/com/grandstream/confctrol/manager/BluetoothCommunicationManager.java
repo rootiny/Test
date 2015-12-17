@@ -2,14 +2,18 @@ package com.grandstream.confctrol.manager;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import com.grandstream.confctrol.BluetoothHandingService;
 import com.grandstream.confctrol.R;
-import com.grandstream.confctrol.entity.BluetoothDeviceInfo;
+import com.grandstream.confctrol.entity.DeviceInfo;
 import com.grandstream.confctrol.function.ConnectStateChangeListener;
+import com.grandstream.confctrol.function.DeviceFind;
 import com.grandstream.confctrol.utils.Constants;
 import com.grandstream.confctrol.utils.LogUtils;
 import com.grandstream.confctrol.utils.ToastUtils;
@@ -31,10 +35,11 @@ public class BluetoothCommunicationManager {
     private BluetoothAdapter mBTAdapter;
     private BluetoothDevice mDevice;
     private String mAddress = "";
-    private BluetoothDeviceInfo mDeviceInfo;
+    private DeviceInfo mDeviceInfo;
 
     private List<ConnectStateChangeListener> mListeners;
-
+    private List<DeviceFind> mDeviceFinds;
+    private BtScanReciver mBtScanReciver;
     private boolean isConnect = false;
     private boolean isConnecting = false;
 
@@ -62,6 +67,51 @@ public class BluetoothCommunicationManager {
     //connect none
     public static final int CONNECT_NONE = 0x00000107;
 
+
+    /**
+     * Bluetooth open state
+     */
+    protected static final int ACTION_STATE_CHANGED = 0x0011;
+
+    /**
+     * Bluetooth find state
+     */
+    protected static final int ACTION_FOUND = 0x0012;
+
+    /**
+     * Bluetooth local connect state
+     */
+    protected static final int ACTION_CONNECTION_STATE_CHANGED = 0x0013;
+    /**
+     * Bluetooth local bond state
+     */
+    protected static final int ACTION_BOND_STATE_CHANGED = 0x0014;
+    /**
+     * Bluetooth real connect state connected
+     */
+    protected static final int ACTION_ACL_CONNECTED = 0x0015;
+    /**
+     * Bluetooth real connect state disconnected
+     */
+    protected static final int ACTION_ACL_DISCONNECTED = 0x0016;
+    /**
+     * Bluetooth real pair state cancel
+     */
+    protected static final int ACTION_PAIR_CANCEL = 0x0017;
+    /**
+     * Bluetooth scan start
+     */
+    protected static final int ACTION_SCAN_START = 0x0018;
+    /**
+     * Bluetooth scan finish
+     */
+    protected static final int ACTION_SCAN_FINISH = 0x0019;
+    /**
+     * remote device rename
+     */
+    protected static final int ACTION_NAME_CHANGE = 0X0020;
+
+
     static public void setContext(Context context ) {
         if (mContext == null){
             mContext = context;
@@ -71,7 +121,7 @@ public class BluetoothCommunicationManager {
     }
 
     static public BluetoothCommunicationManager instance() {
-        if (mContext == null){
+        if (mContext == null) {
             throw new RuntimeException(" BluetoothCommunicationManager context has not been assigned yet !!");
         }
 
@@ -202,6 +252,8 @@ public class BluetoothCommunicationManager {
         mChatService = new BluetoothHandingService(mContext, mHandler);
         mBTAdapter = BluetoothAdapter.getDefaultAdapter();
         mListeners = new ArrayList<ConnectStateChangeListener>();
+        mDeviceFinds = new ArrayList<DeviceFind>();
+        registBluetoothReciver();
     }
 
     private final Handler mHandler = new Handler() {
@@ -217,7 +269,7 @@ public class BluetoothCommunicationManager {
                             isConnect = true;
                             isConnecting = false;
                             if (mDevice != null) {
-                                mDeviceInfo = new BluetoothDeviceInfo();
+                                mDeviceInfo = new DeviceInfo();
                                 mDeviceInfo.mDeviceName = mDevice.getName();
                                 mDeviceInfo.mEnable = true;
                                 mDeviceInfo.mState = mDevice.getBondState();
@@ -272,12 +324,62 @@ public class BluetoothCommunicationManager {
     };
 
 
+    public boolean startDiscovery() {
+        boolean enable =  enableLocalBluetooth();
+        if (enable){
+            mBTAdapter.startDiscovery();
+        }
+        return enable;
+    }
+
+    public void cancleDiscovery(){
+        mBTAdapter.cancelDiscovery();
+    }
+
+
     public void setListeners(ConnectStateChangeListener connectStateChangeListener){
         if (connectStateChangeListener == null){
             return;
         }
         if (!mListeners.contains(connectStateChangeListener)){
             mListeners.add(connectStateChangeListener);
+        }
+    }
+
+    public void removeListener(ConnectStateChangeListener connectStateChangeListener){
+        if (connectStateChangeListener == null){
+            return;
+        }
+        if (mListeners.contains(connectStateChangeListener)){
+            mListeners.remove(connectStateChangeListener);
+        }
+    }
+
+    public void setDeviceFinders(DeviceFind deviceFind){
+        if (deviceFind == null){
+            return;
+        }
+        if (!mDeviceFinds.contains(deviceFind)){
+            mDeviceFinds.add(deviceFind);
+        }
+    }
+
+    public void removeFinder(DeviceFind deviceFind){
+        if (deviceFind == null){
+            return;
+        }
+        if (mDeviceFinds.contains(deviceFind)){
+            mDeviceFinds.remove(deviceFind);
+        }
+    }
+
+    private void deviceFinderSendMessage(int action,  DeviceInfo deviceInfo){
+        for (DeviceFind deviceFind:mDeviceFinds){
+            if (action == ACTION_FOUND){
+                deviceFind.onDeviceFind(deviceInfo);
+            } else {
+                // to do
+            }
         }
     }
 
@@ -303,5 +405,80 @@ public class BluetoothCommunicationManager {
             }
         }
     }
+
+    private void registBluetoothReciver() {
+        mBtScanReciver = new BtScanReciver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        filter.addAction("android.bluetooth.device.action.PAIRING_CANCEL");
+        filter.addAction(BluetoothDevice.ACTION_NAME_CHANGED);
+        mContext.registerReceiver(mBtScanReciver, filter);
+    }
+
+
+    class BtScanReciver extends BroadcastReceiver {
+
+        /* (non-Javadoc)
+         * @see android.content.BroadcastReceiver#onReceive(android.content.Context, android.content.Intent)
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            LogUtils.printLog(TAG, "BtScanReciver        onReceive ");
+            String action = intent.getAction();
+            LogUtils.printLog(TAG, "onReceive   intent action= " + action);
+            LogUtils.printLog(TAG, "onReceive   intent = " + intent);
+            if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
+//                sendMessage(ACTION_STATE_CHANGED, intent);
+                deviceFinderSendMessage(ACTION_STATE_CHANGED, null);
+            } else if (BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED.equals(action)) {
+                int blueconState = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0);
+                int prvState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_CONNECTION_STATE, 0);
+                LogUtils.printLog(TAG, "BtScanReciver          prvState =" + prvState);
+                LogUtils.printLog(TAG, "BtScanReciver          blueconState =" + blueconState);
+//                sendMessage(ACTION_CONNECTION_STATE_CHANGED, intent);
+                deviceFinderSendMessage(ACTION_CONNECTION_STATE_CHANGED, null);
+            } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+//                sendMessage(ACTION_FOUND, intent);
+                deviceFinderSendMessage(ACTION_FOUND, null);
+            } else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+//                sendMessage(ACTION_BOND_STATE_CHANGED, intent);
+                deviceFinderSendMessage(ACTION_BOND_STATE_CHANGED, null);
+            } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                LogUtils.printLog(TAG, "BtScanReciver          ACTION_ACL_CONNECTED ");
+                BluetoothDevice d = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                LogUtils.printLog(TAG, "BtScanReciver          BOND  state =" + d.getBondState());
+//                sendMessage(ACTION_ACL_CONNECTED, intent);
+                deviceFinderSendMessage(ACTION_ACL_CONNECTED, null);
+            } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                LogUtils.printLog(TAG, "BtScanReciver          ACTION_ACL_DISCONNECTED ");
+                BluetoothDevice d = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                LogUtils.printLog(TAG, "BtScanReciver          BOND  state =" + d.getBondState());
+//                sendMessage(ACTION_ACL_DISCONNECTED, intent);
+                deviceFinderSendMessage(ACTION_ACL_DISCONNECTED, null);
+            } else if ("android.bluetooth.device.action.PAIRING_CANCEL".equals(action)) {
+//                sendMessage(ACTION_PAIR_CANCEL, intent);
+                deviceFinderSendMessage(ACTION_PAIR_CANCEL, null);
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+//                sendMessage(ACTION_SCAN_START, intent);
+                deviceFinderSendMessage(ACTION_SCAN_START, null);
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+//                sendMessage(ACTION_SCAN_FINISH, intent);
+                deviceFinderSendMessage(ACTION_SCAN_FINISH, null);
+            } else if (BluetoothDevice.ACTION_NAME_CHANGED.equals(action)) {
+//                sendMessage(ACTION_NAME_CHANGE, intent);
+                deviceFinderSendMessage(ACTION_NAME_CHANGE, null);
+            }
+        }
+
+    }
+
+
 
 }

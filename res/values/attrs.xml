@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LoadingViewAttrs">
+        <attr name="attrsrc" format="reference"/>
+        <attr name="attrdisablesrc" format="reference"/>
+        <attr name="attrenable" format="boolean"/>
+    </declare-styleable>
+</resources>

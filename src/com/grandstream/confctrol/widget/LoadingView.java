@@ -1,9 +1,10 @@
 package com.grandstream.confctrol.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -15,17 +16,13 @@ import com.grandstream.confctrol.R;
  */
 public class LoadingView extends View {
 
-    //界面需要的图片
+    private Bitmap pic;
 
-    private Bitmap panpic;
+    private Bitmap disablePic;
 
-    private Bitmap panhandpic;
+    private Matrix potate = new Matrix();
 
-    //旋转矩阵
-    private Matrix panRotate = new Matrix();
-
-    //平移矩阵
-    private Matrix panhandTrans=new Matrix();
+    private Matrix trans =new Matrix();
 
     private int x = 0;
 
@@ -33,7 +30,7 @@ public class LoadingView extends View {
     private int y0;
 
     private boolean ifRotate = true;
-    private boolean ifFirst = true;
+    private boolean ifEnable = true;
 
     private Handler handler = new Handler(){
         @Override
@@ -53,23 +50,30 @@ public class LoadingView extends View {
 
     public LoadingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init(context, attrs, defStyleAttr);
     }
 
-    private void init(Context context){
-        Resources r = context.getResources();
+    private void init(Context context, AttributeSet attrs, int defStyleAttr){
 
-        //设置指针平移矩阵为按向量(160,160-指针的高度)平移
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LoadingViewAttrs);
+        Drawable src = a.getDrawable(R.styleable.LoadingViewAttrs_attrsrc);
+        Drawable disbalesrc = a.getDrawable(R.styleable.LoadingViewAttrs_attrdisablesrc);
+        ifEnable = a.getBoolean(R.styleable.LoadingViewAttrs_attrenable, true);
+        a.recycle();
+        if (src == null){
+            pic = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
+        } else {
+            pic = ((BitmapDrawable)src).getBitmap();
+        }
 
-//        panhandTrans.setTranslate(160, 160 - 76);
+        if (disbalesrc == null){
+            disablePic = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
+        } else {
+            disablePic = ((BitmapDrawable)disbalesrc).getBitmap();
+        }
 
-        //生成图片
-        panpic = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
-        y0 = panpic.getHeight();
-        x0 = panpic.getWidth();
-//        panhandpic = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
-//        panpic = BitmapFactory.decodeStream(r.openRawResource(R.drawable.ic_launcher));
-//        panhandpic=BitmapFactory.decodeStream(r.openRawResource(R.drawable.panhand));
+        y0 = pic.getHeight();
+        x0 = pic.getWidth();
 
     }
 
@@ -83,15 +87,14 @@ public class LoadingView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        potate.setRotate(x, canvas.getWidth() / 2, canvas.getHeight() / 2);
+        canvas.concat(potate);
+        potate.setTranslate(canvas.getWidth() / 2 - x0 / 2, canvas.getHeight() / 2 - y0 / 2);
+//        canvas.drawBitmap(pic, potate, null);
+        Bitmap bitmap = ifEnable ? pic : disablePic;
+        canvas.drawBitmap(bitmap, potate, null);
 
-//        canvas.concat(panRotate);
-        panRotate.setRotate(x, canvas.getWidth() / 2, canvas.getHeight() / 2);
-        canvas.concat(panRotate);
-        panRotate.setTranslate(canvas.getWidth() / 2 - x0 / 2, canvas.getHeight() / 2 - y0 / 2);
-//        canvas.drawBitmap(panpic, panRotate, null);
-        canvas.drawBitmap(panpic, panRotate, null);
-
-        if (ifRotate){
+        if (ifRotate && ifEnable) {
             Message message = handler.obtainMessage();
             message.what = 1;
             handler.sendMessageDelayed(message, 50);
@@ -99,6 +102,19 @@ public class LoadingView extends View {
 
     }
 
+    public void setEnable(Boolean enable){
+        ifEnable = enable;
+    }
+
+    public void setSrc(int id){
+        pic = ((BitmapDrawable)getResources().getDrawable(id)).getBitmap();
+        postInvalidate();
+    }
+
+    public void setDisableSrc(int id){
+        disablePic = ((BitmapDrawable)getResources().getDrawable(id)).getBitmap();
+        postInvalidate();
+    }
 
     public void startRate(){
         ifRotate = true;

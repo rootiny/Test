@@ -8,4 +8,7 @@
     <string name="toast_bluetooth_dont_opened">The Bluetooth is not turned on!  </string>
     <string name="toast_bluetooth_address_error">Bluetooth device address error!</string>
     <string name="toast_bluetooth_pair_error">Pairing is not finished! </string>
+
+
+    <string name="lable_device"> 设备 </string>
 </resources>
