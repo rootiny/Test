@@ -1,0 +1,30 @@
+###AVOID BUG 1 ##############################################################################################
+QuickAdapter<String> adapter = new QuickAdapter<String>(ConferenceActivity.this,
+                R.layout.conferece_activtiy_mid_item_layout, list) {
+            @Override
+            protected void convert(BaseAdapterHelper helper, String string) {
+                // avoid bug
+                // R.id.conf_member can not be the root view of R.layout.conferece_activtiy_mid_item_layout
+                // if it is , better to use  "helper.setTag(R.id.conf_member, R.id.conf_member ,string);"
+                // reason : BaseAdapterHelper.java line 89
+
+                helper.setTag(R.id.conf_member, string);
+
+                helper.setOnClickListener(R.id.conf_member, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addOneNumber();
+                    }
+                });
+
+                helper.setOnLongClickListener(R.id.conf_member, new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        removeOneNumber((String) v.getTag());
+                        return false;
+                    }
+                });
+            }
+        };
+
+###AVOID BUG 2 ##############################################################################################

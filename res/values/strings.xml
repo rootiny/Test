@@ -11,4 +11,15 @@
 
 
     <string name="lable_device"> 设备 </string>
+
+
+
+
+    <string name="test_decice">DEVICE</string>
+    <string name="test_main">MAIN</string>
+    <string name="test_conferece">CONFERENCE</string>
+    <string name="test_callordial">CALL OR DIAL</string>
+    <string name="test_contact">CONTACT</string>
+    <string name="test_shedule">SCHEDULE</string>
+    <string name="test_camera">CAMERA</string>
 </resources>

@@ -22,19 +22,21 @@ import java.util.UUID;
 public class BluetoothHandingService {
 
     // Debugging
-    private static final String TAG = "BluetoothChatService";
+    private static final String TAG = "BluetoothHandingService";
 
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothChatSecure";
     private static final String NAME_INSECURE = "BluetoothChatInsecure";
 
     public static final UUID SPP_UUID = UUID
-            .fromString("00001101-0000-1000-8000-00805f9b34fb");
+//            .fromString("00001101-0000-1000-8000-00805f9b34fb");
+            .fromString("00001101-0000-1000-8000-00805F9B34FB");
     // Unique UUID for this application
     private static final UUID MY_UUID_SECURE =
             UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
     private static final UUID MY_UUID_INSECURE =
             UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+
 
     // Member fields
     private final BluetoothAdapter mAdapter;
@@ -72,8 +74,8 @@ public class BluetoothHandingService {
      * @param state An integer defining the current connection state
      */
     private synchronized void setState(int state) {
+        LogUtils.printLog(TAG,  " setState " + state);
         mState = state;
-
         // Give the new state to the Handler so the UI Activity can update
         mHandler.obtainMessage(Constants.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
@@ -157,7 +159,7 @@ public class BluetoothHandingService {
      */
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice
             device, final String socketType) {
-        mDevice=device;
+        mDevice = device;
         if (mAdapter!=null&&!mAdapter.isEnabled()) {
             if(mAdapter.getState()==BluetoothAdapter.STATE_OFF)
                 mAdapter.enable();
@@ -265,32 +267,14 @@ public class BluetoothHandingService {
      * Indicate that the connection attempt failed and notify the UI Activity.
      */
     private void connectionFailed() {
-        // Send a failure message back to the Activity
-       /* Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.TOAST, "Unable to connect device");
-        msg.setData(bundle);
-        msg.arg1=1;//disconnect
-        mHandler.sendMessage(msg);*/
         setState(STATE_CONNECT_FAIL);
-        // Start the service over to restart listening mode
-        //BluetoothChatService.this.start();
     }
 
     /**
      * Indicate that the connection was lost and notify the UI Activity.
      */
     private void connectionLost() {
-        // Send a failure message back to the Activity
-       /* Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.TOAST, "Device connection was lost");
-        msg.setData(bundle);
-        msg.arg1=2;//lost connect.
-        mHandler.sendMessage(msg);*/
         setState(STATE_CONNECTED_LOST);
-        // Start the service over to restart listening mode
-        //BluetoothChatService.this.start();
     }
 
     /**
@@ -381,7 +365,7 @@ public class BluetoothHandingService {
 
         public ConnectThread(BluetoothDevice device, boolean secure) {
             mmDevice = device;
-            secure=true;
+            secure = true;
             BluetoothSocket tmp = null;
             mSocketType = secure ? "Secure" : "Insecure";
 
@@ -389,20 +373,21 @@ public class BluetoothHandingService {
             // given BluetoothDevice
             try {
                 if (secure) {
-                    tmp = device.createRfcommSocketToServiceRecord( SPP_UUID);
+                    tmp = device.createRfcommSocketToServiceRecord(SPP_UUID);
                 } else {
                     tmp = device.createInsecureRfcommSocketToServiceRecord(SPP_UUID);
                 }
             } catch (IOException e) {
+                setState(STATE_CONNECT_FAIL);
             }
             mmSocket = tmp;
         }
 
         public void run() {
             setName("ConnectThread" + mSocketType);
-            boolean ff=false;
+            boolean ff = false;
             // Always cancel discovery because it will slow down a connection
-            if(mAdapter!=null&&mAdapter.isDiscovering())
+            if(mAdapter != null && mAdapter.isDiscovering())
                 ff=mAdapter.cancelDiscovery();
             LogUtils.printLog(TAG, "ConnectThread run()   cancelDiscovery= " + ff);
             // Make a connection to the BluetoothSocket
@@ -459,6 +444,9 @@ public class BluetoothHandingService {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) {
+
+                setState(STATE_CONNECT_FAIL);
+
             }
 
             mmInStream = tmpIn;

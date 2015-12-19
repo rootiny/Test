@@ -1,0 +1,17 @@
+<com.base.module.phone.customview.MultiCallNumberView xmlns:android="http://schemas.android.com/apk/res/android"
+                                                      xmlns:tools="http://schemas.android.com/tools"
+                                                      android:id="@+id/multi_callnumber_view"
+                                                      android:layout_width="match_parent"
+                                                      android:layout_height="match_parent"
+                                                      android:layout_alignParentLeft="true"
+                                                      android:layout_centerVertical="true"
+                                                      android:scrollbars="none" >
+
+    <LinearLayout
+            android:id="@+id/layout_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+    </LinearLayout>
+
+</com.base.module.phone.customview.MultiCallNumberView>

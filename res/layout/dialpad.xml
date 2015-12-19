@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.base.module.phone.customview.DialPadGridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                    android:id="@+id/dialPadGridLayout"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
+                                                    android:alignmentMode="alignBounds"
+                                                    android:columnCount="4"
+                                                    android:splitMotionEvents="false"
+                                                    android:orientation="horizontal"
+                                                    android:rowCount="4" >
+
+    <Button
+            android:id="@+id/btn_number1"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_number_1_bg"
+            android:text="@string/str_num1" />
+
+    <Button
+            android:id="@+id/btn_number2"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_number_2_bg"
+            android:text="@string/str_num2" />
+
+    <Button
+            android:id="@+id/btn_number3"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_number_3_bg"
+            android:text="@string/str_num3" />
+
+    <Button
+            android:id="@+id/btn_conf"
+            android:layout_width="109px"
+            android:layout_height="133px"
+            android:layout_marginTop="0px"
+            android:layout_rowSpan="2"
+            android:background="@drawable/key_conf_bg"
+            android:gravity="bottom|center_horizontal"
+            android:paddingBottom="15px"
+            android:text="@string/str_conf"
+            android:textColor="#000"
+            android:textSize="20px" />
+
+    <Button
+            android:id="@+id/btn_number4"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_number_4_bg"
+            android:text="@string/str_num4" />
+
+    <Button
+            android:id="@+id/btn_number5"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_number_5_bg"
+            android:text="@string/str_num5" />
+
+    <Button
+            android:id="@+id/btn_number6"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_number_6_bg"
+            android:text="@string/str_num6" />
+
+    <Button
+            android:id="@+id/btn_number7"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_number_7_bg"
+            android:text="@string/str_num7" />
+
+    <Button
+            android:id="@+id/btn_number8"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_number_8_bg"
+            android:text="@string/str_num8" />
+
+    <Button
+            android:id="@+id/btn_number9"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_number_9_bg"
+            android:text="@string/str_num9" />
+
+    <Button
+            android:id="@+id/btn_contacts"
+            android:layout_width="109px"
+            android:layout_height="133px"
+            android:layout_marginTop="0px"
+            android:layout_rowSpan="2"
+            android:background="@drawable/key_contact_bg"
+            android:gravity="bottom|center_horizontal"
+            android:paddingBottom="25px"
+            android:text="@string/str_contacts"
+            android:textColor="#000"
+            android:textSize="20px" />
+
+    <Button
+            android:id="@+id/btn_star"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_star_bg"
+            android:text="@string/str_star" />
+
+    <Button
+            android:id="@+id/btn_number0"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_number_0_bg"
+            android:text="@string/str_num0" />
+
+    <Button
+            android:id="@+id/btn_pound"
+            android:layout_width="136px"
+            android:layout_height="66px"
+            android:layout_marginRight="0px"
+            android:layout_marginTop="0px"
+            android:background="@drawable/key_pound_bg"
+            android:text="@string/str_sharp" />
+
+</com.base.module.phone.customview.DialPadGridLayout>

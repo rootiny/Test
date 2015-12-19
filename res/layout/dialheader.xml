@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.base.module.phone.customview.DialHeaderGridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                       android:id="@+id/dialHeaderGridLayout"
+                                                       android:layout_width="match_parent"
+                                                       android:layout_height="83px"
+                                                       android:alignmentMode="alignBounds"
+                                                       android:columnCount="2"
+                                                       android:orientation="horizontal"
+                                                       android:rowCount="1" >
+
+    <RelativeLayout
+            android:id="@+id/layout_call_number_container"
+            android:layout_height="52px"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="3px"
+            android:layout_marginLeft="8px"
+            android:layout_marginRight="4px"
+            android:layout_marginTop="3px"
+            android:background="@drawable/keypad_input_default"
+            android:orientation="horizontal"
+            android:paddingRight="0px" >
+
+        <ImageButton
+                android:id="@+id/btn_del"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/dialer_del_bg" />
+
+        <include
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/btn_del"
+                layout="@layout/multi_call_number_view" />
+    </RelativeLayout>
+
+    <Button
+            android:id="@+id/btn_call"
+            android:layout_marginBottom="3px"
+            android:layout_marginLeft="4px"
+            android:layout_marginRight="6px"
+            android:layout_marginTop="3px"
+            android:background="@drawable/dialer_call_bg" />
+
+</com.base.module.phone.customview.DialHeaderGridLayout>

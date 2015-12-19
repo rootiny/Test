@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item>
+        <shape
+            android:dither="true"
+            android:shape="rectangle" >
+            <size
+                android:height="50px"
+                android:width="73px" />
+
+            <solid android:color="#00000000" />
+        </shape>
+    </item>
+    <item
+        android:bottom="0dp"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="0dp">
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/dialer_del_normal" />
+
+        <padding
+            android:bottom="12px"
+            android:left="15px"
+            android:right="20px"
+            android:top="1px" />
+    </item>
+
+</layer-list>

@@ -20,10 +20,57 @@
               android:layout_height="match_parent"
         >
 
-    <Button android:id="@+id/button_scan"
+    <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView" android:layout_gravity="center_horizontal">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+            <Button android:id="@+id/button_divice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/test_decice"
+                    />
             <!--android:text="@string/button_scan"-->
+            <Button android:id="@+id/button_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/test_main"
+                    />
+
+            <Button android:id="@+id/button_conference"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/test_conferece"
+                    />
+            <Button android:id="@+id/button_callordial"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/test_callordial"
+                    />
+
+            <Button android:id="@+id/button_contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/test_contact"
+                    />
+            <Button android:id="@+id/button_shedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/test_shedule"
+                    />
+
+            <Button android:id="@+id/button_camera"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/test_camera"
+                    />
+
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>
 

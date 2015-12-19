@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="str_num1">1</string>
+    <string name="str_num2">2</string>
+    <string name="str_num3">3</string>
+    <string name="str_num4">4</string>
+    <string name="str_num5">5</string>
+    <string name="str_num6">6</string>
+    <string name="str_num7">7</string>
+    <string name="str_num8">8</string>
+    <string name="str_num9">9</string>
+    <string name="str_num0">0</string>
+    <string name="str_star">*</string>
+    <string name="str_sharp">#</string>
+    <string name="str_bracket_left">(</string>
+    <string name="str_bracket_right">)</string>
+    <string name="str_mpk">MPK</string>
+    <string name="str_n_way_conf">N-Way Conf</string>
+    <string name="str_srtp">SRTP</string>
+    <string name="str_via">via:</string>
+
+    <string name="str_conf">会议</string>
+    <string name="str_contacts">联系人</string>
+    <string name="str_mode">GS_module_527</string>
+
+</resources>

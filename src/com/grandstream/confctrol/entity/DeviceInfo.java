@@ -36,5 +36,7 @@ public class DeviceInfo implements Serializable {
 
     public int mRssi;
 
-    public boolean mEnable;
+    public boolean IfEnable;
+
+    public boolean IfPared;
 }

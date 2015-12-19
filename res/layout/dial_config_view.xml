@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/dialConfigView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80px"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="14px"
+                android:paddingTop="14px" >
+
+            <TextView
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="18px"
+                    android:layout_weight="1"
+                    android:text="@string/str_mode"
+                    android:textColor="#000000"
+                    android:textSize="22px" />
+
+            <Button
+                    android:id="@+id/spinner_call_mode"
+                    style="@style/spinner_style"
+                    android:layout_width="0px"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="14px"
+                    android:layout_marginRight="18px"
+                    android:layout_weight="2" />
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/layout_usable_accounts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/layout_scheduled_conf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+        </LinearLayout>
+
+        <include layout="@layout/split_line_horizontal" />
+    </LinearLayout>
+
+</ScrollView>

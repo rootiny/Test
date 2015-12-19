@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              android:splitMotionEvents="false"
+              >
+
+    <LinearLayout
+            android:layout_width="271px"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+        <ListView
+                android:id="@+id/listview_matches"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" >
+        </ListView>
+
+        <com.base.module.phone.customview.DialConfigView
+                android:id="@+id/dialConfigView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+        </com.base.module.phone.customview.DialConfigView>
+    </LinearLayout>
+
+    <include layout="@layout/split_line_vertical" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+        <include layout="@layout/dialheader" />
+
+        <include layout="@layout/dialpad" />
+    </LinearLayout>
+
+</LinearLayout>

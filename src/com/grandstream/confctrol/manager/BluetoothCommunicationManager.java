@@ -14,6 +14,7 @@ import com.grandstream.confctrol.R;
 import com.grandstream.confctrol.entity.DeviceInfo;
 import com.grandstream.confctrol.function.ConnectStateChangeListener;
 import com.grandstream.confctrol.function.DeviceFind;
+import com.grandstream.confctrol.utils.Assert;
 import com.grandstream.confctrol.utils.Constants;
 import com.grandstream.confctrol.utils.LogUtils;
 import com.grandstream.confctrol.utils.ToastUtils;
@@ -132,6 +133,24 @@ public class BluetoothCommunicationManager {
         return mBtMngr;
     }
 
+    public boolean ensureBound(String address) {
+        Assert.debug(address);
+        BluetoothDevice device  = mBTAdapter.getRemoteDevice(address);
+        return ensureBound(device);
+    }
+
+    public boolean ensureBound(BluetoothDevice device) {
+        Assert.debug(device);
+        int bondState = device.getBondState();
+        switch (bondState){
+            case BluetoothDevice.BOND_NONE:
+                return device.createBond();
+            case BluetoothDevice.BOND_BONDED:
+                return true;
+        }
+        return false;
+    }
+
 
     /**
      * connect to a bluetooth device
@@ -145,7 +164,7 @@ public class BluetoothCommunicationManager {
         }
         mAddress = address;
         if (enableLocalBluetooth()) {
-            mDevice = mBTAdapter.getRemoteDevice(address);
+            mDevice  = mBTAdapter.getRemoteDevice(address);
             connect(mDevice);
         } else {
 //            CustomMessage.showToast(mContext, mContext.getString(R.string.hint_bluetooth_dont_opened), Gravity.CENTER, 0);
@@ -271,7 +290,7 @@ public class BluetoothCommunicationManager {
                             if (mDevice != null) {
                                 mDeviceInfo = new DeviceInfo();
                                 mDeviceInfo.mDeviceName = mDevice.getName();
-                                mDeviceInfo.mEnable = true;
+                                mDeviceInfo.IfEnable = true;
                                 mDeviceInfo.mState = mDevice.getBondState();
                                 mDeviceInfo.mMacAddress = mDevice.getAddress();
 //                                StateDataHelper.keepLastDeviceInfo(mContext, mAddress);
@@ -332,8 +351,10 @@ public class BluetoothCommunicationManager {
         return enable;
     }
 
-    public void cancleDiscovery(){
-        mBTAdapter.cancelDiscovery();
+    public void stopDiscovery(){
+        if (mBTAdapter.isDiscovering()){
+            mBTAdapter.cancelDiscovery();
+        }
     }
 
 
@@ -446,7 +467,18 @@ public class BluetoothCommunicationManager {
                 deviceFinderSendMessage(ACTION_CONNECTION_STATE_CHANGED, null);
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 //                sendMessage(ACTION_FOUND, intent);
-                deviceFinderSendMessage(ACTION_FOUND, null);
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if (device != null){
+                    final DeviceInfo deviceInfo = new DeviceInfo();
+                    deviceInfo.mDeviceName = device.getName();
+                    deviceInfo.mMacAddress = device.getAddress();
+                    deviceInfo.mState = device.getBondState();
+                    int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
+//                    deviceInfo.mRssi = Math.min(rssi, 0);
+                    deviceInfo.mRssi = rssi;
+                    deviceFinderSendMessage(ACTION_FOUND, deviceInfo);
+
+                }
             } else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
 //                sendMessage(ACTION_BOND_STATE_CHANGED, intent);
                 deviceFinderSendMessage(ACTION_BOND_STATE_CHANGED, null);
