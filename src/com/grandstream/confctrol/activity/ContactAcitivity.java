@@ -3,15 +3,9 @@ package com.grandstream.confctrol.activity;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import com.grandstream.confctrol.R;
-import com.grandstream.confctrol.utils.LogUtils;
+import com.grandstream.confctrol.fragment.ContactEnterFragment;
 
 import java.util.Stack;
 
@@ -24,53 +18,6 @@ public class ContactAcitivity extends Activity {
 
     FragmentManger mFragmentManger;
 
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            LogUtils.printLog(TAG," onClick " + (String)v.getTag() );
-            if ("fragment1".equals((String)v.getTag())){
-                mFragmentManger.addFragment(R.id.fragment_container, fragment2);
-            } else if ("fragment2".equals((String)v.getTag())){
-                mFragmentManger.addFragment(R.id.fragment_container, fragment3);
-            } else if ("fragment3".equals((String)v.getTag())){
-                mFragmentManger.removeFrament();
-            }
-        }
-    };
-
-    Fragment  fragment1 = new Fragment(){
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            TextView textView = new TextView(ContactAcitivity.this);
-            textView.setText("fragment1");
-            textView.setTag("fragment1");
-            textView.setOnClickListener(onClickListener);
-            return textView;
-        }
-    };
-
-
-    Fragment  fragment2 = new Fragment(){
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            TextView textView = new TextView(ContactAcitivity.this);
-            textView.setText("fragment2");
-            textView.setTag("fragment2");
-            textView.setOnClickListener(onClickListener);
-            return textView;
-        }
-    };
-
-    Fragment  fragment3 = new Fragment(){
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            TextView textView = new TextView(ContactAcitivity.this);
-            textView.setText("fragment3");
-            textView.setTag("fragment3");
-            textView.setOnClickListener(onClickListener);
-            return textView;
-        }
-    };
 
 
 
@@ -80,7 +27,8 @@ public class ContactAcitivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_activity_main_layout);
         mFragmentManger = new FragmentManger();
-        mFragmentManger.addFragment(R.id.fragment_container, fragment1);
+        ContactEnterFragment contactEnter = new ContactEnterFragment();
+        mFragmentManger.addFragment(R.id.fragment_container, contactEnter);
     }
 
     @Override

@@ -11,6 +11,8 @@
 
 
     <string name="lable_device"> 设备 </string>
+    <string name="str_local"> 本地联系人 </string>
+    <string name="str_ldap"> LDAP联系人 </string>
 
 
 
