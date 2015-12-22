@@ -6,6 +6,8 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import com.grandstream.confctrol.R;
 import com.grandstream.confctrol.fragment.ContactEnterFragment;
+import com.grandstream.confctrol.fragment.LocalContacFragment;
+import com.grandstream.confctrol.utils.LogUtils;
 
 import java.util.Stack;
 
@@ -16,23 +18,26 @@ public class ContactAcitivity extends Activity {
 
     final private String TAG = "ContactAcitivity";
 
+    public enum ContactsFragment {
+        ENTER_FRAGMENT,
+        LOCAL_FRAGMENT,
+        LDAP_FRAGMENT
+    }
+    ContactEnterFragment mContactEnterFragment;
+    LocalContacFragment mLocalFragment;
     FragmentManger mFragmentManger;
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_activity_main_layout);
         mFragmentManger = new FragmentManger();
-        ContactEnterFragment contactEnter = new ContactEnterFragment();
-        mFragmentManger.addFragment(R.id.fragment_container, contactEnter);
+        starFrament(ContactsFragment.ENTER_FRAGMENT);
     }
 
     @Override
     public void onBackPressed() {
+        LogUtils.printLog(TAG, " onBackPressed  mFragmentManger.isLast() :" + mFragmentManger.isLast());
         if (!mFragmentManger.isLast()){
             mFragmentManger.removeFrament();
         } else {
@@ -41,6 +46,28 @@ public class ContactAcitivity extends Activity {
         }
     }
 
+    public void starFrament(ContactsFragment contactsFragment){
+        mFragmentManger.addFragment(R.id.fragment_container, instanceFragment(contactsFragment));
+    }
+
+    private Fragment instanceFragment(ContactsFragment contactsFragment){
+        switch (contactsFragment){
+            case LOCAL_FRAGMENT:
+                if (mLocalFragment == null){
+                    mLocalFragment = new LocalContacFragment();
+                }
+                return mLocalFragment;
+
+            case LDAP_FRAGMENT:
+                return null;
+
+            default:
+                if (mContactEnterFragment == null){
+                    mContactEnterFragment = new ContactEnterFragment();
+                }
+                return mContactEnterFragment;
+        }
+    }
 
     public class FragmentManger {
         Stack<Fragment> fragmentStack;
@@ -59,6 +86,7 @@ public class ContactAcitivity extends Activity {
         }
 
         public void removeFrament(){
+            LogUtils.printLog(TAG, " removeFrament  fragmentStack.isEmpty() :" + fragmentStack.isEmpty());
             if (!fragmentStack.isEmpty()){
                 Fragment fragment = fragmentStack.pop();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
