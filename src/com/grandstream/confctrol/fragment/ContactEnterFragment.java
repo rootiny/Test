@@ -1,7 +1,6 @@
 package com.grandstream.confctrol.fragment;
 
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.grandstream.confctrol.R;
 import com.grandstream.confctrol.activity.ContactAcitivity;
+import com.grandstream.confctrol.utils.LogUtils;
 import com.joanzapata.android.BaseAdapterHelper;
 import com.joanzapata.android.QuickAdapter;
 
@@ -19,9 +19,9 @@ import java.util.List;
 /**
  * Created by zhyjiang on 12/21/15.
  */
-public class ContactEnterFragment extends Fragment {
+public class ContactEnterFragment extends BaseFragment {
 
-
+    private static final String TAG = "ContactEnterFragment";
     protected QuickAdapter<String> mAdapter;
     protected ListView mListView;
     protected List<String> mDateList = new ArrayList<String>();
@@ -32,6 +32,7 @@ public class ContactEnterFragment extends Fragment {
         View linearLayout = (View) inflater
                 .inflate(R.layout.contactenter_fragment_main_layout, null);
         mListView = (ListView)linearLayout.findViewById(R.id.list);
+        LogUtils.printLog(TAG, " onCreateView " + toString());
         return linearLayout;
     }
 

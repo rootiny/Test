@@ -1,9 +1,9 @@
 package com.grandstream.confctrol.activity;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import com.grandstream.confctrol.R;
 import com.grandstream.confctrol.fragment.ContactEnterFragment;
 import com.grandstream.confctrol.fragment.LocalContacFragment;
@@ -14,7 +14,7 @@ import java.util.Stack;
 /**
  * Created by zhyjiang on 12/15/15.
  */
-public class ContactAcitivity extends Activity {
+public class ContactAcitivity extends FragmentActivity {
 
     final private String TAG = "ContactAcitivity";
 
@@ -26,6 +26,15 @@ public class ContactAcitivity extends Activity {
     ContactEnterFragment mContactEnterFragment;
     LocalContacFragment mLocalFragment;
     FragmentManger mFragmentManger;
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        LogUtils.printLog(TAG, " onAttachFragment " + fragment.toString());
+    }
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +87,7 @@ public class ContactAcitivity extends Activity {
 
         public void addFragment(int resId, Fragment fragment) {
             if (!fragmentStack.contains(fragment)){
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.add(resId, fragment);
                 transaction.commit();
                 fragmentStack.push(fragment);
@@ -89,7 +98,7 @@ public class ContactAcitivity extends Activity {
             LogUtils.printLog(TAG, " removeFrament  fragmentStack.isEmpty() :" + fragmentStack.isEmpty());
             if (!fragmentStack.isEmpty()){
                 Fragment fragment = fragmentStack.pop();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.remove(fragment);
                 transaction.commit();
             }

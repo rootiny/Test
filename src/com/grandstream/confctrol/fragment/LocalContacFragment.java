@@ -1,38 +1,30 @@
 package com.grandstream.confctrol.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import com.grandstream.confctrol.R;
-import com.grandstream.confctrol.adapter.ContactsAdapter;
 import com.grandstream.confctrol.utils.LogUtils;
-import com.grandstream.confctrol.widget.BladeView;
-import com.grandstream.confctrol.widget.PinnedHeaderListView;
-
-import java.util.*;
+import com.grandstream.confctrol.widget.CanScrollViewPager;
 
 /**
  * Created by zhyjiang on 12/21/15.
  */
-public class LocalContacFragment extends Fragment {
+public class LocalContacFragment extends BaseFragment {
 
     private static final String TAG = "LocalContacFragment";
-    private static final String FORMAT = "^[a-z,A-Z].*$";
-    private PinnedHeaderListView mListView;
-    private BladeView mLetter;
-    private ContactsAdapter mAdapter;
-    private String[] datas;
-    // 首字母集
-    private List<String> mSections;
-    // 根据首字母存放数据
-    private Map<String, List<String>> mMap;
-    // 首字母位置集
-    private List<Integer> mPositions;
-    // 首字母对应的位置
-    private Map<String, Integer> mIndexer;
+    private CanScrollViewPager mViewPager = null;
+    private int TAB_INDEX_COUNT = 2;
+    private Button button1;
+    private Button button2;
+    ContactFrangment contactFrangment1;
+    ContactFrangment contactFrangment2;
 
     @Override
     public void onAttach(Activity activity) {
@@ -47,9 +39,9 @@ public class LocalContacFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.contact_frament_main_layout, null);
-        initData();
-        initView(view);
+        View view = inflater.inflate(R.layout.localcontact_fragment_main_layout, null);
+        initViewPager(view);
+        LogUtils.printLog(TAG, " onCreateView " + toString());
         return view;
     }
 
@@ -58,70 +50,16 @@ public class LocalContacFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
     }
 
-    private void initData() {
-        datas = getResources().getStringArray(R.array.countries);
-        mSections = new ArrayList<String>();
-        mMap = new HashMap<String, List<String>>();
-        mPositions = new ArrayList<Integer>();
-        mIndexer = new HashMap<String, Integer>();
 
-        for (int i = 0; i < datas.length; i++) {
-            String firstName = datas[i].substring(0, 1);
-            if (firstName.matches(FORMAT)) {
-                if (mSections.contains(firstName)) {
-                    mMap.get(firstName).add(datas[i]);
-                } else {
-                    mSections.add(firstName);
-                    List<String> list = new ArrayList<String>();
-                    list.add(datas[i]);
-                    mMap.put(firstName, list);
-                }
-            } else {
-                if (mSections.contains("#")) {
-                    mMap.get("#").add(datas[i]);
-                } else {
-                    mSections.add("#");
-                    List<String> list = new ArrayList<String>();
-                    list.add(datas[i]);
-                    mMap.put("#", list);
-                }
-            }
-        }
-
-        Collections.sort(mSections);
-        int position = 0;
-        for (int i = 0; i < mSections.size(); i++) {
-            mIndexer.put(mSections.get(i), position);// 存入map中，key为首字母字符串，value为首字母在listview中位置
-            mPositions.add(position);// 首字母在listview中位置，存入list中
-            position += mMap.get(mSections.get(i)).size();// 计算下一个首字母在listview的位置
-        }
-
-
-
-    }
-
-    private void initView(View view) {
-        // TODO Auto-generated method stub
-        mListView = (PinnedHeaderListView) view.findViewById(R.id.friends_display);
-        mLetter = (BladeView) view.findViewById(R.id.friends_myletterlistview);
-        mLetter.setOnItemClickListener(new BladeView.OnItemClickListener() {
-            @Override
-            public void onItemClick(String s) {
-                if (mIndexer.get(s) != null) {
-                    mListView.setSelection(mIndexer.get(s));
-                }
-            }
-        });
-        mAdapter = new ContactsAdapter(datas, mSections, mPositions, getActivity().getLayoutInflater());
-        mListView.setAdapter(mAdapter);
-        mListView.setOnScrollListener(mAdapter);
-        mListView.setPinnedHeaderView(LayoutInflater.from(getActivity()).inflate(
-                R.layout.contact_fragment_spinlistview_headitem_layout, mListView, false));
-    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        android.support.v4.app.FragmentTransaction fragmentTransaction
+                = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.remove(contactFrangment1);
+        fragmentTransaction.remove(contactFrangment2);
+        fragmentTransaction.commit();
         LogUtils.printLog(TAG, "onDestroyView");
     }
 
@@ -135,4 +73,81 @@ public class LocalContacFragment extends Fragment {
         super.onDetach();
         LogUtils.printLog(TAG, "onDetach");
     }
+
+
+
+    private void initViewPager(View view){
+        mViewPager = (CanScrollViewPager)view.findViewById(R.id.page);
+        mViewPager.setOnPageChangeListener(new PagerChaneListener());
+        mViewPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
+        mViewPager.setOffscreenPageLimit(TAB_INDEX_COUNT);
+        button1 = (Button)view.findViewById(R.id.button);
+        button2 = (Button)view.findViewById(R.id.button2);
+        button1.setOnClickListener(onClickListener);
+        button2.setOnClickListener(onClickListener);
+    }
+
+
+    class ViewPagerAdapter extends FragmentPagerAdapter{
+
+        public ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int i) {
+            if (i == 0){
+                if (contactFrangment1 == null){
+                    contactFrangment1 = new ContactFrangment();
+                }
+                return contactFrangment1;
+            } else {
+                if (contactFrangment2 == null){
+                    contactFrangment2 = new ContactFrangment();
+                }
+                return contactFrangment2;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+    }
+
+    class PagerChaneListener implements ViewPager.OnPageChangeListener{
+        @Override
+        public void onPageScrolled(int i, float v, int i1) {
+
+        }
+
+        @Override
+        public void onPageSelected(int i) {
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int i) {
+
+        }
+    }
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (R.id.button == v.getId()){
+                if(mViewPager.getCurrentItem() != 0 ){
+                    mViewPager.setCurrentItem(0, true);
+                }
+            }else {
+                if(mViewPager.getCurrentItem() != 1 ){
+                    mViewPager.setCurrentItem(1, true);
+                }
+            }
+
+        }
+    };
+
+
+
 }
